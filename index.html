@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ROBO RESCUE – AISC</title>
+<link rel="icon" href="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07071a;--card:rgba(22,19,54,.84);--text:#eef0ff;--muted:#a3abdc;--line:rgba(125,110,255,.3);--acc:#00e5ff;--ok:#2dff9a;--bad:#ff3860;
+--red:#ff2d55;--blue:#2d7bff;--purple:#9b5cff;--cyan:#00e5ff;--orange:#ff9a1f;
+--grad:linear-gradient(135deg,#ff2d55 0%,#9b5cff 55%,#2d7bff 100%);--grad2:linear-gradient(135deg,#00e5ff 0%,#2d7bff 50%,#9b5cff 100%);
+--font:'Rajdhani',system-ui,Segoe UI,Roboto,sans-serif;--head:'Orbitron','Rajdhani',system-ui,sans-serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--font);font-size:17px;color:var(--text);min-height:100vh;
+background:radial-gradient(900px 500px at 8% -5%,rgba(255,45,85,.22),transparent 60%),radial-gradient(900px 600px at 100% 0%,rgba(45,123,255,.25),transparent 60%),radial-gradient(800px 600px at 50% 110%,rgba(155,92,255,.28),transparent 60%),var(--bg)}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+background-image:linear-gradient(rgba(0,229,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.06) 1px,transparent 1px);background-size:38px 38px;
+-webkit-mask-image:linear-gradient(#000,transparent 85%);mask-image:linear-gradient(#000,transparent 85%)}
+[hidden]{display:none!important}
+.center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.card{position:relative;background:var(--card);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px auto;max-width:1000px;
+box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06);transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:hover{border-color:rgba(0,229,255,.55);box-shadow:0 14px 38px rgba(0,0,0,.5),0 0 22px rgba(0,229,255,.18)}
+.card::before{content:"";position:absolute;left:18px;right:18px;top:0;height:3px;border-radius:0 0 4px 4px;background:var(--grad)}
+.auth{max-width:400px;width:100%;text-align:center}
+.auth:hover{transform:translateY(-3px)}
+.logo{width:160px;height:160px;object-fit:contain;background:#fff;border-radius:22px;padding:8px;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+box-shadow:0 0 0 3px rgba(0,229,255,.7),0 0 30px rgba(0,229,255,.55),0 0 60px rgba(155,92,255,.45);animation:glow 3.2s ease-in-out infinite;transition:transform .2s}
+.logo:active{transform:scale(.95)}
+.logo.sm{width:46px;height:46px;border-radius:11px;padding:3px;animation:none;box-shadow:0 0 0 2px var(--cyan),0 0 14px rgba(0,229,255,.7)}
+@keyframes glow{0%,100%{box-shadow:0 0 0 3px rgba(0,229,255,.7),0 0 26px rgba(0,229,255,.5),0 0 54px rgba(155,92,255,.35)}50%{box-shadow:0 0 0 3px rgba(255,45,85,.7),0 0 34px rgba(255,45,85,.55),0 0 66px rgba(45,123,255,.5)}}
+h1,h2,h3{font-family:var(--head);margin:.45em 0;letter-spacing:.04em}
+h1{font-size:30px;font-weight:800;background:linear-gradient(90deg,#00e5ff,#9b5cff,#ff2d55,#ff9a1f,#00e5ff);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:250% center}}
+h2{font-size:21px;color:#fff}h3{font-size:17px;color:var(--cyan);text-transform:uppercase}
+input,select{width:100%;padding:12px 14px;margin:5px 0;border:1px solid var(--line);border-radius:11px;background:rgba(8,8,32,.85);color:var(--text);font:600 17px var(--font);outline:none;transition:border-color .2s,box-shadow .2s}
+input::placeholder{color:#7c85b8}
+input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,.2),0 0 16px rgba(0,229,255,.3)}
+.btn{background:var(--grad);color:#fff;border:0;border-radius:11px;padding:11px 18px;font:700 16px var(--font);letter-spacing:.05em;text-transform:uppercase;cursor:pointer;margin:4px 3px;
+box-shadow:0 4px 18px rgba(155,92,255,.5),0 0 0 1px rgba(255,255,255,.12) inset;transition:transform .2s,box-shadow .2s,filter .2s}
+.btn:hover{transform:translateY(-2px) scale(1.03);filter:brightness(1.15);box-shadow:0 6px 26px rgba(255,45,85,.55),0 0 22px rgba(0,229,255,.4)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:rgba(0,229,255,.06);color:var(--cyan);border:1px solid rgba(0,229,255,.55);box-shadow:none}
+.btn.ghost:hover{background:rgba(0,229,255,.16);box-shadow:0 0 20px rgba(0,229,255,.45)}
+.btn.danger{background:linear-gradient(135deg,#ff2d55,#ff9a1f);box-shadow:0 4px 18px rgba(255,45,85,.5)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none;filter:grayscale(.6);box-shadow:none}
+.tabs{display:flex;gap:8px;margin:12px 0}
+.tabs button{flex:1;padding:10px;border:1px solid var(--line);background:rgba(15,13,45,.8);color:var(--text);border-radius:11px;cursor:pointer;font:700 16px var(--font);letter-spacing:.04em;transition:all .2s}
+.tabs button:hover{border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 0 16px rgba(0,229,255,.3)}
+.tabs button.active{background:var(--grad2);border-color:transparent;color:#fff;box-shadow:0 0 22px rgba(0,229,255,.55)}
+nav.main{max-width:1000px;margin:12px auto;padding:0 12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+nav.main button{white-space:nowrap;min-width:max-content;padding:10px 16px}
+header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:rgba(10,9,34,.85);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);position:sticky;top:0;z-index:5;flex-wrap:wrap;border-bottom:2px solid transparent;border-image:linear-gradient(90deg,#ff2d55,#9b5cff,#2d7bff,#00e5ff) 1;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+header b{font-family:var(--head);font-size:17px;letter-spacing:.08em;background:var(--grad2);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.grow{flex:1}
+.clock{font:800 22px var(--head);color:var(--cyan);background:#050520;border:1px solid var(--cyan);padding:5px 12px;border-radius:10px;text-shadow:0 0 10px var(--cyan);box-shadow:0 0 16px rgba(0,229,255,.4),inset 0 0 12px rgba(0,229,255,.15)}
+.tab{padding:0 12px 34px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row input{flex:1;min-width:140px}
+.muted{color:var(--muted)}.small{font-size:14px}
+.msg{min-height:1.2em;font-size:15px;font-weight:600;color:var(--bad)}.msg.ok{color:var(--ok)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:separate;border-spacing:0 5px}
+th{padding:8px;text-align:left;font:700 13px var(--head);letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);white-space:nowrap}
+td{padding:11px 8px;text-align:left;font-size:16px;white-space:nowrap;background:rgba(255,255,255,.035);transition:background .2s}
+td:first-child{border-radius:10px 0 0 10px}td:last-child{border-radius:0 10px 10px 0}
+tbody tr:hover td{background:rgba(0,229,255,.12)}
+td.wrap{white-space:normal}
+#boardTbl td:first-child{font:800 18px var(--head);text-align:center}
+tr.r1 td{background:linear-gradient(90deg,rgba(255,215,0,.32),rgba(255,170,0,.08));color:#ffe27a;font-weight:700;text-shadow:0 0 12px rgba(255,200,0,.6);box-shadow:inset 0 1px 0 rgba(255,225,120,.4),inset 0 -1px 0 rgba(255,225,120,.4)}
+tr.r1 td:first-child{box-shadow:inset 4px 0 0 #ffd700,0 0 22px rgba(255,215,0,.35)}
+tr.r2 td{background:linear-gradient(90deg,rgba(210,220,240,.26),rgba(190,200,230,.06));color:#e6ecff;font-weight:700;text-shadow:0 0 10px rgba(200,215,255,.5)}
+tr.r2 td:first-child{box-shadow:inset 4px 0 0 #c9d3ea}
+tr.r3 td{background:linear-gradient(90deg,rgba(205,127,50,.32),rgba(255,120,40,.07));color:#ffc08a;font-weight:700;text-shadow:0 0 10px rgba(255,140,60,.5)}
+tr.r3 td:first-child{box-shadow:inset 4px 0 0 #cd7f32}
+tr.r1:hover td,tr.r2:hover td,tr.r3:hover td{filter:brightness(1.2)}
+.modal{position:fixed;inset:0;background:rgba(3,3,16,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#ticketCanvas{height:auto!important;max-width:100%;border-radius:16px;box-shadow:0 0 30px rgba(155,92,255,.6)}
+#reader{width:100%;max-width:360px;margin:0 auto 10px;border-radius:14px;overflow:hidden}
+#reader video{border-radius:14px}
+.cat{display:flex;gap:8px;align-items:center;padding:10px 6px;border-bottom:1px solid var(--line);flex-wrap:wrap;border-radius:10px;transition:background .2s}
+.cat:hover{background:rgba(155,92,255,.12)}
+.cat .nm{flex:1;min-width:160px}.cat input{width:100px;margin:0}
+.big{font:800 40px var(--head);background:linear-gradient(135deg,#00e5ff,#9b5cff,#ff2d55);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 10px rgba(155,92,255,.6))}
+.pill{padding:2px 10px;border-radius:99px;border:1px solid var(--orange);color:var(--orange);font-size:13px;font-weight:700;background:rgba(255,154,31,.1)}
+@media(max-width:600px){
+body{font-size:16px}
+h1{font-size:23px}
+.logo{width:130px;height:130px}
+.card{padding:14px;margin:10px auto}
+td{padding:9px 6px;font-size:14px}th{font-size:11px;padding:6px}
+.clock{font-size:18px}
+header{padding:8px 10px;gap:6px}
+.tab{padding:0 8px 30px}
+.big{font-size:32px}
+.cat .nm{min-width:100%}.cat input{flex:1}
+.btn{padding:10px 12px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+</head>
+<body>
+
+<!-- LOGIN / REGISTER -->
+<main id="authView" class="center">
+  <div class="card auth">
+    <img class="logoimg logo" id="logo" alt="AISC logo">
+    <h1>ROBO RESCUE</h1>
+    <p class="muted">26 November 2026 · Organised by AISC</p>
+    <div class="tabs"><button id="tabLogin" class="active">Admin Login</button><button id="tabReg">Register</button></div>
+    <form id="authForm">
+      <input id="aName" placeholder="Your name" hidden>
+      <input id="aEmail" type="email" placeholder="Email" required>
+      <input id="aPass" type="password" placeholder="Password (min 6 chars)" minlength="6" required>
+      <button class="btn" id="authBtn">Login</button>
+    </form>
+    <p id="authMsg" class="msg"></p>
+  </div>
+</main>
+
+<!-- HIDDEN SUPER ADMIN (tap logo 7 times) -->
+<div id="superModal" class="modal" hidden>
+  <div class="card auth">
+    <h2>Super Admin</h2>
+    <form id="superForm">
+      <input id="sEmail" type="email" placeholder="Super admin email" required>
+      <input id="sPass" type="password" placeholder="Password" minlength="6" required>
+      <button class="btn">Login</button>
+      <button type="button" id="sCreate" class="btn ghost">First time? Create account</button>
+      <button type="button" id="sClose" class="btn ghost">Close</button>
+    </form>
+    <p id="superMsg" class="msg"></p>
+  </div>
+</div>
+
+<!-- PENDING -->
+<main id="pendingView" class="center" hidden>
+  <div class="card auth">
+    <img class="logoimg logo" alt="">
+    <h2 id="pendingTitle">Waiting for approval</h2>
+    <p class="muted" id="pendingText">A super admin must approve your account. This page updates automatically.</p>
+    <button class="btn ghost" data-logout>Logout</button>
+  </div>
+</main>
+
+<!-- APP -->
+<div id="appView" hidden>
+  <header>
+    <img class="logoimg logo sm" id="logo2" alt="AISC">
+    <b>ROBO RESCUE</b>
+    <span class="grow"></span>
+    <span id="clock" class="clock">00:00.0</span>
+    <span id="who" class="muted small"></span>
+    <button class="btn ghost sm" data-logout>Logout</button>
+  </header>
+  <nav class="tabs main">
+    <button data-tab="board" class="active">🏆 Leaderboard</button>
+    <button data-tab="score">📷 Scoring</button>
+    <button data-tab="teams">👥 Teams</button>
+    <button data-tab="settings" id="setTab" hidden>⚙️ Settings</button>
+  </nav>
+
+  <section id="tab-board" class="tab">
+    <div class="card">
+      <div class="row">
+        <b>Event stopwatch</b>
+        <button class="btn sm" id="swStart">Start</button>
+        <button class="btn sm" id="swPause">Pause</button>
+        <button class="btn sm" id="swResume">Resume</button>
+        <button class="btn sm danger" id="swReset">Reset</button>
+        <span id="swState" class="muted small"></span>
+      </div>
+    </div>
+    <div class="card scroll"><table id="boardTbl"><thead><tr><th>Rank</th><th>Team</th><th>Score</th><th>Time</th><th>Attempts</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="tab-score" class="tab" hidden>
+    <div class="card">
+      <div id="reader"></div>
+      <div class="row">
+        <button class="btn" id="scanStart">📷 Scan team QR</button>
+        <button class="btn ghost" id="scanStop" hidden>Stop camera</button>
+      </div>
+      <div class="row"><input id="manual" placeholder="…or type team code (e.g. RR-AB12C)"><button class="btn ghost" id="manualBtn">Find</button></div>
+      <p id="scanMsg" class="msg"></p>
+    </div>
+    <div id="teamPanel" class="card" hidden></div>
+  </section>
+
+  <section id="tab-teams" class="tab" hidden>
+    <div class="card">
+      <h3 id="formTitle">Register team</h3>
+      <form id="teamForm">
+        <input id="tName" placeholder="Team name" required>
+        <input class="tm" placeholder="Participant 1 (required)" required>
+        <input class="tm" placeholder="Participant 2 (optional)">
+        <input class="tm" placeholder="Participant 3 (optional)">
+        <div class="row"><button class="btn" id="teamSave">Register team</button><button type="button" class="btn ghost" id="teamCancel" hidden>Cancel edit</button><button type="button" class="btn ghost" id="dummyBtn">Add dummy teams</button></div>
+      </form>
+    </div>
+    <div class="card scroll">
+      <input id="search" placeholder="🔍 Search teams or participants">
+      <table id="teamTbl"><thead><tr><th>Code</th><th>Team</th><th>Participants</th><th></th></tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+
+  <section id="tab-settings" class="tab" hidden>
+    <div class="card">
+      <h3>Scoring categories</h3>
+      <p class="muted small">Total must equal 75. Locked once the stopwatch has started.</p>
+      <div id="catEditor"></div>
+      <p id="catTotal"></p>
+      <button class="btn" id="catSave">Save categories</button>
+      <p id="catMsg" class="msg"></p>
+    </div>
+    <div class="card scroll"><h3>Admin accounts</h3><table id="adminTbl"><tbody></tbody></table></div>
+  </section>
+</div>
+
+<!-- QR TICKET -->
+<div id="qrModal" class="modal" hidden>
+  <div class="card auth"><canvas id="ticketCanvas" style="max-width:100%"></canvas>
+    <button class="btn" id="dlTicket">⬇ Download PNG</button>
+    <button class="btn ghost" id="qrClose">Close</button></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ============================================================
+//  STEP 1: PASTE YOUR FIREBASE CONFIG BELOW
+//  Firebase Console > Project settings (gear icon) > General >
+//  "Your apps" > Web app (</>) > copy the firebaseConfig values.
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyCCMYX6GoTbNAmDAZDjuHyxPb6IWRcAMW0",
+  authDomain: "robo-rescue-aisc.firebaseapp.com",
+  projectId: "robo-rescue-aisc",
+  storageBucket: "robo-rescue-aisc.firebasestorage.app",
+  messagingSenderId: "782658912192",
+  appId: "1:782658912192:web:cb6b0f66c65d38c8195225"
+};
+
+// STEP 2: Your super admin email (lowercase). Must ALSO be written in firestore.rules.
+const SUPER_EMAIL = "superadmin@example.com";
+
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+
+// ---------- LOGO (embedded, no separate file needed) ----------
+const LOGO = 'data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20300%22%3E%0A%3Crect%20width%3D%22300%22%20height%3D%22300%22%20fill%3D%22%23fff%22%2F%3E%0A%3Cg%20fill%3D%22%23050505%22%3E%0A%3Cpath%20d%3D%22M120%2093%20C144%2062%20178%2030%20211%2018%20C189%2043%20164%2071%20151%2096%20Z%22%2F%3E%0A%3Cpath%20d%3D%22M72%20101%20C122%2099%20178%2098%20213%20118%20C242%20135%20246%20157%20230%20179%20C211%20205%20173%20218%20124%20231%20C163%20210%20185%20190%20181%20171%20C178%20154%20155%20143%20129%20130%20Z%22%2F%3E%0A%3Cpath%20d%3D%22M124%20141%20C118%20177%2099%20211%2072%20236%20C111%20231%20146%20218%20163%20198%20C177%20181%20169%20165%20151%20154%20Z%22%2F%3E%0A%3C%2Fg%3E%0A%3Ctext%20x%3D%22150%22%20y%3D%22281%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2C%20%27Times%20New%20Roman%27%2C%20serif%22%20font-size%3D%2249%22%20letter-spacing%3D%229%22%20fill%3D%22%23050505%22%3EAISC%3C%2Ftext%3E%0A%3C%2Fsvg%3E';
+document.querySelectorAll("img.logoimg").forEach(i => i.src = LOGO);
+document.querySelector("link[rel=icon]").href = LOGO;
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const EVENT_TOTAL = 75;
+const DEFAULT_CATS = [
+  { id: "quiz", name: "QR + AI Quiz", max: 16 },
+  { id: "logic", name: "Logic Puzzle", max: 16 },
+  { id: "rc", name: "RC Car Challenge", max: 16 },
+  { id: "cap", name: "Capacitor Defusal Challenge", max: 15 },
+  { id: "passive", name: "Three Passive Quizzes (total)", max: 5, fixed: true },
+  { id: "envelope", name: "Envelope Bonus", max: 7, fixed: true }
+];
+const S = { isSuper: false, teams: [], cats: DEFAULT_CATS, ev: { status: "idle", baseMs: 0, startedAt: null }, offset: 0, cur: null, curUnsub: null, editId: null, started: false, unsubs: [], scanner: null, regMode: false };
+const now = () => Date.now() + S.offset;
+const ms = t => (t && t.toMillis ? t.toMillis() : null);
+
+// ---------- AUTH SCREENS ----------
+function show(id) { ["authView", "pendingView", "appView"].forEach(v => $("#" + v).hidden = v !== id); }
+$("#tabLogin").onclick = () => setReg(false);
+$("#tabReg").onclick = () => setReg(true);
+function setReg(r) {
+  S.regMode = r; $("#aName").hidden = !r; $("#aName").required = r;
+  $("#authBtn").textContent = r ? "Register" : "Login";
+  $("#tabLogin").classList.toggle("active", !r); $("#tabReg").classList.toggle("active", r); $("#authMsg").textContent = "";
+}
+$("#authForm").onsubmit = async e => {
+  e.preventDefault(); const m = $("#authMsg"); m.textContent = "";
+  try {
+    const em = $("#aEmail").value.trim(), pw = $("#aPass").value;
+    if (S.regMode) {
+      const c = await createUserWithEmailAndPassword(auth, em, pw);
+      await setDoc(doc(db, "admins", c.user.uid), { name: $("#aName").value.trim(), email: em.toLowerCase(), status: "pending", role: "admin", createdAt: serverTimestamp() });
+    } else await signInWithEmailAndPassword(auth, em, pw);
+  } catch (err) { m.textContent = err.message.replace("Firebase: ", ""); }
+};
+// Hidden super admin: tap logo 7 times within 5 seconds
+let taps = [];
+["#logo", "#logo2"].forEach(sel => $(sel).addEventListener("click", () => {
+  const t = Date.now(); taps = taps.filter(x => t - x < 5000); taps.push(t);
+  if (taps.length >= 7) { taps = []; $("#superModal").hidden = false; }
+}));
+$("#sClose").onclick = () => $("#superModal").hidden = true;
+$("#superForm").onsubmit = async e => {
+  e.preventDefault();
+  try { await signInWithEmailAndPassword(auth, $("#sEmail").value.trim(), $("#sPass").value); $("#superModal").hidden = true; }
+  catch (err) { $("#superMsg").textContent = err.message.replace("Firebase: ", ""); }
+};
+$("#sCreate").onclick = async () => {
+  try {
+    const em = $("#sEmail").value.trim().toLowerCase();
+    if (em !== SUPER_EMAIL.toLowerCase()) throw new Error("Email must match SUPER_EMAIL in firebase.js");
+    await createUserWithEmailAndPassword(auth, em, $("#sPass").value); $("#superModal").hidden = true;
+  } catch (err) { $("#superMsg").textContent = err.message.replace("Firebase: ", ""); }
+};
+$$("[data-logout]").forEach(b => b.onclick = () => signOut(auth));
+
+let adminUnsub = null;
+onAuthStateChanged(auth, user => {
+  adminUnsub && adminUnsub(); cleanup();
+  if (!user) return show("authView");
+  const isSuper = (user.email || "").toLowerCase() === SUPER_EMAIL.toLowerCase();
+  const ref = doc(db, "admins", user.uid);
+  if (isSuper) setDoc(ref, { name: "Super Admin", email: user.email.toLowerCase(), status: "approved", role: "super" }, { merge: true }).catch(console.error);
+  adminUnsub = onSnapshot(ref, snap => {
+    const d = snap.data();
+    if (!d) { if (!isSuper) { show("pendingView"); } return; }
+    if (d.status === "approved") { S.isSuper = d.role === "super"; $("#who").textContent = d.name + (S.isSuper ? " (super)" : ""); if (!S.started) startApp(user); show("appView"); }
+    else {
+      cleanup(); show("pendingView");
+      $("#pendingTitle").textContent = d.status === "rejected" ? "Access denied" : "Waiting for approval";
+    }
+  }, err => console.error(err));
+});
+function cleanup() { S.unsubs.forEach(u => u()); S.unsubs = []; S.started = false; stopScan(); clearInterval(S.tick); }
+
+// ---------- APP START ----------
+async function startApp(user) {
+  S.started = true; $("#setTab").hidden = !S.isSuper;
+  // server clock offset
+  try { const p = doc(db, "meta", user.uid); await setDoc(p, { t: serverTimestamp() }); const s = await getDoc(p); S.offset = s.data().t.toMillis() - Date.now(); } catch (e) { console.warn(e); }
+  S.unsubs.push(onSnapshot(collection(db, "teams"), s => { S.teams = s.docs.map(d => ({ id: d.id, ...d.data({ serverTimestamps: "estimate" }) })); renderBoard(); renderTeams(); }));
+  S.unsubs.push(onSnapshot(doc(db, "config", "categories"), s => { S.cats = s.exists() ? s.data().list : DEFAULT_CATS; renderCatEditor(); renderBoard(); if (S.cur) renderPanel(); }));
+  S.unsubs.push(onSnapshot(doc(db, "config", "event"), s => { if (s.exists()) S.ev = s.data({ serverTimestamps: "estimate" }); else S.ev = { status: "idle", baseMs: 0, startedAt: null }; renderSW(); renderCatEditor(); }));
+  if (S.isSuper) S.unsubs.push(onSnapshot(collection(db, "admins"), s => renderAdmins(s.docs.map(d => ({ id: d.id, ...d.data() })))));
+  S.tick = setInterval(() => { renderClock(); renderBoard(); }, 500);
+}
+
+// ---------- TABS ----------
+$$("[data-tab]").forEach(b => b.onclick = () => {
+  $$("[data-tab]").forEach(x => x.classList.toggle("active", x === b));
+  $$(".tab").forEach(t => t.hidden = t.id !== "tab-" + b.dataset.tab);
+  if (b.dataset.tab !== "score") stopScan();
+});
+
+// ---------- STOPWATCH (shared via config/event) ----------
+const elapsed = () => S.ev.status === "running" ? S.ev.baseMs + (now() - (ms(S.ev.startedAt) || now())) : (S.ev.baseMs || 0);
+const fmt = v => { v = Math.max(0, v); const m = Math.floor(v / 60000), s = Math.floor(v % 60000 / 1000), t = Math.floor(v % 1000 / 100); return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0") + "." + t; };
+function renderClock() { $("#clock").textContent = fmt(elapsed()); }
+function renderSW() {
+  const st = S.ev.status;
+  $("#swStart").disabled = st !== "idle"; $("#swPause").disabled = st !== "running"; $("#swResume").disabled = st !== "paused"; $("#swReset").disabled = st === "idle";
+  $("#swState").textContent = "Status: " + st; renderClock();
+}
+const evRef = doc(db, "config", "event");
+$("#swStart").onclick = () => setDoc(evRef, { status: "running", baseMs: 0, startedAt: serverTimestamp() });
+$("#swPause").onclick = () => setDoc(evRef, { status: "paused", baseMs: elapsed(), startedAt: null });
+$("#swResume").onclick = () => setDoc(evRef, { status: "running", baseMs: S.ev.baseMs, startedAt: serverTimestamp() });
+$("#swReset").onclick = () => confirm("Reset the stopwatch for ALL admins?") && setDoc(evRef, { status: "idle", baseMs: 0, startedAt: null });
+
+// ---------- LEADERBOARD ----------
+const timeTaken = t => { const s = ms(t.startedAt), f = ms(t.finishedAt); return s ? (f || now()) - s : null; };
+function renderBoard() {
+  const rows = S.teams.map(t => ({ t, time: timeTaken(t) })).sort((a, b) =>
+    (b.t.total || 0) - (a.t.total || 0) || (a.time ?? Infinity) - (b.time ?? Infinity) || (a.t.attempts || 0) - (b.t.attempts || 0));
+  let rank = 0, prev = null;
+  $("#boardTbl tbody").innerHTML = rows.map((r, i) => {
+    const key = [r.t.total || 0, r.time, r.t.attempts || 0].join("|"); if (key !== prev) rank = i + 1; prev = key;
+    return `<tr class="r${rank <= 3 ? rank : 0}"><td>${rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : rank}</td><td>${esc(r.t.name)}</td><td>${r.t.total || 0}/${EVENT_TOTAL}</td><td>${r.time == null ? "—" : fmt(r.time)}${r.t.startedAt && !r.t.finishedAt ? " ⏱" : ""}</td><td>${r.t.attempts || 0}</td></tr>`;
+  }).join("") || `<tr><td colspan="5" class="muted">No teams yet</td></tr>`;
+}
+
+// ---------- TEAMS ----------
+const rnd = n => { const a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; const b = crypto.getRandomValues(new Uint8Array(n)); return [...b].map(x => a[x % a.length]).join(""); };
+const token = () => [...crypto.getRandomValues(new Uint8Array(16))].map(x => x.toString(16).padStart(2, "0")).join("");
+function newCode() { let c; do c = "RR-" + rnd(5); while (S.teams.some(t => t.code === c)); return c; }
+async function createTeam(name, members) {
+  // Doc ID = random 128-bit token. The QR contains ONLY this token.
+  await setDoc(doc(db, "teams", token()), { code: newCode(), name, members, scores: {}, total: 0, attempts: 0, startedAt: null, finishedAt: null, createdAt: serverTimestamp() });
+}
+$("#teamForm").onsubmit = async e => {
+  e.preventDefault();
+  const members = $$(".tm").map(i => i.value.trim()).filter(Boolean), name = $("#tName").value.trim();
+  if (!members.length) return alert("Add at least 1 participant");
+  if (S.editId) await updateDoc(doc(db, "teams", S.editId), { name, members });
+  else await createTeam(name, members);
+  resetForm();
+};
+function resetForm() { S.editId = null; $("#teamForm").reset(); $("#formTitle").textContent = "Register team"; $("#teamSave").textContent = "Register team"; $("#teamCancel").hidden = true; }
+$("#teamCancel").onclick = resetForm;
+$("#dummyBtn").onclick = async () => {
+  const d = [["Iron Rescuers", ["Aarav", "Diya"]], ["Circuit Breakers", ["Kabir", "Meera", "Rohan"]], ["Volt Vipers", ["Ishaan"]], ["Servo Squad", ["Ananya", "Vikram"]], ["Byte Bots", ["Sneha", "Arjun", "Nisha"]]];
+  for (const [n, m] of d) await createTeam("[DUMMY] " + n, m);
+};
+function renderTeams() {
+  const q = $("#search").value.toLowerCase();
+  const list = S.teams.filter(t => (t.name + t.code + t.members.join(" ")).toLowerCase().includes(q)).sort((a, b) => a.name.localeCompare(b.name));
+  $("#teamTbl tbody").innerHTML = list.map(t => `<tr><td>${esc(t.code)}</td><td>${esc(t.name)}</td><td class="wrap">${esc(t.members.join(", "))}</td>
+  <td><button class="btn sm" data-qr="${t.id}">QR</button> <button class="btn sm ghost" data-ed="${t.id}">Edit</button>${S.isSuper ? ` <button class="btn sm danger" data-del="${t.id}">✕</button>` : ""}</td></tr>`).join("");
+}
+$("#search").oninput = renderTeams;
+$("#teamTbl").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.qr) openTicket(S.teams.find(t => t.id === b.dataset.qr));
+  if (b.dataset.ed) {
+    const t = S.teams.find(x => x.id === b.dataset.ed); S.editId = t.id; $("#tName").value = t.name;
+    $$(".tm").forEach((i, k) => i.value = t.members[k] || ""); $("#formTitle").textContent = "Edit team: " + t.code;
+    $("#teamSave").textContent = "Save changes"; $("#teamCancel").hidden = false; scrollTo({ top: 0, behavior: "smooth" });
+  }
+  if (b.dataset.del && confirm("Delete this team?")) deleteDoc(doc(db, "teams", b.dataset.del));
+};
+
+// ---------- QR TICKET ----------
+const logoImg = new Image(); logoImg.src = LOGO;
+let ticketTeam = null;
+function openTicket(t) {
+  ticketTeam = t; const c = $("#ticketCanvas"), x = c.getContext("2d"); c.width = 600; c.height = 900;
+  const holder = document.createElement("div");
+  new QRCode(holder, { text: t.id, width: 400, height: 400, correctLevel: QRCode.CorrectLevel.M });
+  const qr = holder.querySelector("canvas");
+  const rr = (X, Y, W, H, R) => { x.beginPath(); x.moveTo(X + R, Y); x.arcTo(X + W, Y, X + W, Y + H, R); x.arcTo(X + W, Y + H, X, Y + H, R); x.arcTo(X, Y + H, X, Y, R); x.arcTo(X, Y, X + W, Y, R); x.closePath(); };
+  const bg = x.createLinearGradient(0, 0, 600, 900); bg.addColorStop(0, "#0b0b2e"); bg.addColorStop(.5, "#1d0c44"); bg.addColorStop(1, "#06173a");
+  x.fillStyle = bg; x.fillRect(0, 0, 600, 900);
+  const glow = x.createRadialGradient(0, 0, 0, 0, 0, 420); glow.addColorStop(0, "rgba(255,45,85,.35)"); glow.addColorStop(1, "rgba(255,45,85,0)"); x.fillStyle = glow; x.fillRect(0, 0, 600, 900);
+  const g2 = x.createRadialGradient(600, 900, 0, 600, 900, 460); g2.addColorStop(0, "rgba(0,229,255,.3)"); g2.addColorStop(1, "rgba(0,229,255,0)"); x.fillStyle = g2; x.fillRect(0, 0, 600, 900);
+  const bd = x.createLinearGradient(0, 0, 600, 900); bd.addColorStop(0, "#ff2d55"); bd.addColorStop(.5, "#9b5cff"); bd.addColorStop(1, "#00e5ff");
+  x.strokeStyle = bd; x.lineWidth = 6; x.shadowColor = "#9b5cff"; x.shadowBlur = 18; rr(12, 12, 576, 876, 28); x.stroke(); x.shadowBlur = 0;
+  x.textAlign = "center";
+  // AISC logo (embedded)
+  x.shadowColor = "#00e5ff"; x.shadowBlur = 28; x.fillStyle = "#fff"; rr(225, 30, 150, 150, 26); x.fill(); x.shadowBlur = 0;
+  x.drawImage(logoImg, 235, 40, 130, 130);
+  const tg = x.createLinearGradient(120, 0, 480, 0); tg.addColorStop(0, "#00e5ff"); tg.addColorStop(.5, "#c8a6ff"); tg.addColorStop(1, "#ff5c7a");
+  x.fillStyle = tg; x.shadowColor = "#9b5cff"; x.shadowBlur = 16; x.font = "800 42px Orbitron, Arial Black, sans-serif"; x.fillText("ROBO RESCUE", 300, 232); x.shadowBlur = 0;
+  x.fillStyle = "#a3abdc"; x.font = "600 18px Rajdhani, Arial, sans-serif"; x.fillText("26 NOVEMBER 2026  ·  ORGANISED BY AISC", 300, 264);
+  // QR panel
+  x.shadowColor = "#ff2d55"; x.shadowBlur = 24; x.fillStyle = "#fff"; rr(80, 285, 440, 440, 22); x.fill(); x.shadowBlur = 0;
+  x.strokeStyle = bd; x.lineWidth = 5; rr(80, 285, 440, 440, 22); x.stroke();
+  x.drawImage(qr, 100, 305, 400, 400);
+  x.fillStyle = "#fff"; x.shadowColor = "#00e5ff"; x.shadowBlur = 10; x.font = "700 34px Rajdhani, Arial, sans-serif"; x.fillText(t.name.slice(0, 28), 300, 780); x.shadowBlur = 0;
+  x.fillStyle = "#00e5ff"; x.shadowColor = "#00e5ff"; x.shadowBlur = 12; x.font = "800 30px Orbitron, monospace"; x.fillText(t.code, 300, 824); x.shadowBlur = 0;
+  x.fillStyle = "#a3abdc"; x.font = "600 17px Rajdhani, Arial, sans-serif"; x.fillText(t.members.join(" · ").slice(0, 60), 300, 852);
+  x.fillStyle = "#ff9a1f"; x.font = "700 14px Rajdhani, Arial, sans-serif"; x.fillText("SCAN QR TO RECORD SCORE", 300, 878);
+  $("#qrModal").hidden = false;
+}
+$("#qrClose").onclick = () => $("#qrModal").hidden = true;
+$("#dlTicket").onclick = () => { const a = document.createElement("a"); a.download = `${ticketTeam.code}-${ticketTeam.name.replace(/\W+/g, "_")}.png`; a.href = $("#ticketCanvas").toDataURL("image/png"); a.click(); };
+
+// ---------- SCANNING + SCORING ----------
+async function startScan() {
+  try {
+    S.scanner = new Html5Qrcode("reader");
+    await S.scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 240 }, txt => { stopScan(); loadTeam(txt.trim()); });
+    $("#scanStart").hidden = true; $("#scanStop").hidden = false;
+  } catch (e) { $("#scanMsg").textContent = "Camera error: " + e; }
+}
+async function stopScan() { try { if (S.scanner) { await S.scanner.stop(); S.scanner.clear(); } } catch { } S.scanner = null; $("#scanStart").hidden = false; $("#scanStop").hidden = true; }
+$("#scanStart").onclick = startScan; $("#scanStop").onclick = stopScan;
+$("#manualBtn").onclick = () => { const v = $("#manual").value.trim(); const t = S.teams.find(t => t.code.toLowerCase() === v.toLowerCase() || t.id === v); t ? loadTeam(t.id) : $("#scanMsg").textContent = "Team not found"; };
+function loadTeam(id) {
+  S.curUnsub && S.curUnsub(); $("#scanMsg").textContent = "";
+  S.curUnsub = onSnapshot(doc(db, "teams", id), s => {
+    if (!s.exists()) { S.cur = null; $("#teamPanel").hidden = true; return $("#scanMsg").textContent = "Invalid QR – team not found"; }
+    S.cur = { id: s.id, ...s.data({ serverTimestamps: "estimate" }) }; renderPanel();
+  }, e => $("#scanMsg").textContent = e.message);
+  S.unsubs.push(() => S.curUnsub && S.curUnsub());
+}
+function renderPanel() {
+  const t = S.cur; if (!t) return; const p = $("#teamPanel"); p.hidden = false;
+  const focus = document.activeElement && document.activeElement.id; const keep = {}; $$("#teamPanel input[data-in]").forEach(i => keep[i.dataset.in] = i.value);
+  p.innerHTML = `<div class="row"><div class="grow"><h2>${esc(t.name)}</h2><span class="pill">${esc(t.code)}</span> <span class="muted small">${esc(t.members.join(", "))}</span></div>
+  <div style="text-align:right"><div class="big">${t.total || 0}<span class="muted small">/${EVENT_TOTAL}</span></div></div></div>
+  <div class="row"><button class="btn sm" data-a="tstart">▶ Start team timer</button><button class="btn sm" data-a="tfin">⏹ Finish</button>
+  <span class="small">Time: ${timeTaken(t) == null ? "—" : fmt(timeTaken(t))}</span>
+  <span class="small">Attempts: <b>${t.attempts || 0}</b></span><button class="btn sm ghost" data-a="att+">+1</button><button class="btn sm ghost" data-a="att-">−1</button></div>
+  ${S.cats.map(c => { const done = t.scores && t.scores[c.id] !== undefined;
+    return `<div class="cat"><div class="nm"><b>${esc(c.name)}</b> <span class="muted small">(max ${c.max})</span></div>
+    ${done ? `<b>${t.scores[c.id]} pts ✅</b>` : ""}
+    ${!done || S.isSuper ? `<input type="number" min="0" max="${c.max}" step="0.5" data-in="${c.id}" value="${keep[c.id] ?? (done ? t.scores[c.id] : "")}" placeholder="points"><button class="btn sm" data-save="${c.id}">${done ? "Edit (super)" : "Save"}</button>` : `<span class="muted small">locked</span>`}</div>`; }).join("")}`;
+  if (focus) { const f = $("#teamPanel input[data-in]:focus"); }
+}
+$("#teamPanel").onclick = async e => {
+  const b = e.target.closest("button"); if (!b || !S.cur) return; const ref = doc(db, "teams", S.cur.id);
+  if (b.dataset.a === "tstart") await updateDoc(ref, { startedAt: serverTimestamp(), finishedAt: null });
+  if (b.dataset.a === "tfin") await updateDoc(ref, { finishedAt: serverTimestamp() });
+  if (b.dataset.a === "att+") await updateDoc(ref, { attempts: (S.cur.attempts || 0) + 1 });
+  if (b.dataset.a === "att-") await updateDoc(ref, { attempts: Math.max(0, (S.cur.attempts || 0) - 1) });
+  if (b.dataset.save) saveScore(b.dataset.save);
+};
+async function saveScore(cid) {
+  const cat = S.cats.find(c => c.id === cid), v = parseFloat($(`[data-in="${cid}"]`).value);
+  if (isNaN(v) || v < 0 || v > cat.max) return alert(`Enter points between 0 and ${cat.max}`);
+  try {
+    await runTransaction(db, async tx => {
+      const ref = doc(db, "teams", S.cur.id), snap = await tx.get(ref), d = snap.data();
+      if (d.scores && d.scores[cid] !== undefined && !S.isSuper) throw new Error("Already scored – only a super admin can edit.");
+      const scores = { ...(d.scores || {}), [cid]: v };
+      tx.update(ref, { scores, total: Object.values(scores).reduce((a, b) => a + b, 0) });
+    });
+  } catch (e) { alert(e.message); }
+}
+
+// ---------- SETTINGS (super admin) ----------
+function renderCatEditor() {
+  if (!S.isSuper) return; const locked = S.ev.status !== "idle";
+  $("#catEditor").innerHTML = S.cats.map(c => `<div class="cat"><div class="nm">${esc(c.name)}</div><input type="number" min="0" data-cat="${c.id}" value="${c.max}" ${locked || c.fixed ? "disabled" : ""}>${c.fixed ? '<span class="muted small">fixed</span>' : ""}</div>`).join("");
+  $("#catSave").disabled = locked; updCatTotal();
+}
+function updCatTotal() { const t = $$("[data-cat]").reduce((a, i) => a + (+i.value || 0), 0); $("#catTotal").innerHTML = `Total: <b style="color:var(${t === EVENT_TOTAL ? "--ok" : "--bad"})">${t} / ${EVENT_TOTAL}</b>`; return t; }
+$("#catEditor").oninput = updCatTotal;
+$("#catSave").onclick = async () => {
+  if (updCatTotal() !== EVENT_TOTAL) return $("#catMsg").textContent = "Total must be exactly 75";
+  const list = S.cats.map(c => ({ ...c, max: +$(`[data-cat="${c.id}"]`).value }));
+  await setDoc(doc(db, "config", "categories"), { list }); $("#catMsg").className = "msg ok"; $("#catMsg").textContent = "Saved ✔";
+};
+function renderAdmins(list) {
+  $("#adminTbl tbody").innerHTML = list.map(a => `<tr><td>${esc(a.name)}<br><span class="muted small">${esc(a.email)}</span></td><td><span class="pill">${a.status}${a.role === "super" ? " · super" : ""}</span></td><td>${a.role === "super" ? "" :
+    `<button class="btn sm" data-ap="${a.id}">Approve</button> <button class="btn sm danger" data-rj="${a.id}">${a.status === "approved" ? "Revoke" : "Reject"}</button>`}</td></tr>`).join("");
+}
+$("#adminTbl").onclick = e => { const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.ap) updateDoc(doc(db, "admins", b.dataset.ap), { status: "approved" });
+  if (b.dataset.rj) updateDoc(doc(db, "admins", b.dataset.rj), { status: "rejected" }); };
+</script>
+</body>
+</html>
